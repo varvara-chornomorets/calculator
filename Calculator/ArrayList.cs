@@ -11,13 +11,13 @@ public class ArrayList
         _pointer++;
         if (_pointer == _array.Length)
         {
-            int[] ExtendedArray = new int[_array.Length * 2];
+            int[] extendedArray = new int[_array.Length * 2];
             for (int i = 0; i < _array.Length; i++)
             {
-                ExtendedArray[i] = _array[i];
+                extendedArray[i] = _array[i];
             }
 
-            _array = ExtendedArray;
+            _array = extendedArray;
         }
     }
 
@@ -25,7 +25,7 @@ public class ArrayList
     {
         return _pointer;
     }
-    
+
     public void Remove(int value)
     {
         for (int i = 0; i < _array.Length; i++)
@@ -41,8 +41,15 @@ public class ArrayList
                 break;
             }
         }
+
         {
-            
+
         }
     }
+
+    public int GetElement(int index)
+    {
+        return _array[index];
+    }
+
 }
