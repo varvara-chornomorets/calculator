@@ -2,16 +2,16 @@ namespace Calculator;
 
 public class ArrayList
 {
-    private int[] _array = new int[10];
+    private string[] _array = new string[10];
     private int _pointer = 0;
 
-    public void Add(int value)
+    public void Add(string value)
     {
         _array[_pointer] = value;
         _pointer++;
         if (_pointer == _array.Length)
         {
-            int[] extendedArray = new int[_array.Length * 2];
+            string[] extendedArray = new string[_array.Length * 2];
             for (int i = 0; i < _array.Length; i++)
             {
                 extendedArray[i] = _array[i];
@@ -26,7 +26,7 @@ public class ArrayList
         return _pointer;
     }
 
-    public void Remove(int value)
+    public void Remove(string value)
     {
         for (int i = 0; i < _array.Length; i++)
         {
@@ -47,9 +47,17 @@ public class ArrayList
         }
     }
 
-    public int GetElement(int index)
+    public string GetElement(int index)
     {
         return _array[index];
+    }
+    
+    public void Print()
+    {
+        foreach (var number in _array)
+        {
+            Console.WriteLine(number);
+        }
     }
 
 }

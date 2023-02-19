@@ -4,9 +4,9 @@ public class Queue
 {
     private int _pointer = 0;
     private static int _capacity = 50;
-    private int[] _array = new int[_capacity];
+    private string[] _array = new string[_capacity];
 
-    public void Enque(int value)
+    public void Enque(string value)
     {
         if (_pointer == _capacity)
         {
@@ -24,7 +24,7 @@ public class Queue
         {
             throw new Exception("queue is empty, but you try to take an element out");
         }
-        int result = _array[0];
+        string result = _array[0];
         _pointer--;
         for (int i = 0; i < _pointer && _pointer < 49; i++ )
         {
@@ -38,6 +38,16 @@ public class Queue
         {
             Console.WriteLine(number);
         }
+    }
+
+    public int GetLength()
+    {
+        return _pointer;
+    }
+
+    public string GetValue(int index)
+    {
+        return _array[index];
     }
 
 }
