@@ -2,7 +2,7 @@
 
 bool IsOperator(char s)
 {
-    if (s is '+' or '-' or '*' or '/' or '^' or '(' or ')')
+    if (s is '+' or '-' or '*' or '/' or '^')
     {
         return true;
     }
@@ -22,29 +22,28 @@ string MakeNumber(Queue b)
 }
 
 
-int OperatorConvert(char s)
+int OperatorConvert(string s)
 {
-    if (s is '+' or '-')
-    {
-        return 1;
-    }
-    else if (s is '*' or '/')
+    if (s is "+" or "-")
     {
         return 2;
     }
-    else if (s is '^')
+    else if (s is "*" or "/")
     {
         return 3;
+    }
+    else if (s is "^")
+    {
+        return 4;
     }
 
     return 0;
 }
 
 
-string? newInput = Console.ReadLine();
-
 ArrayList Tokenize()
 {
+    string? newInput = Console.ReadLine();
     var b = new Queue();
     var tokens = new ArrayList();
     for (int i = 0; i < newInput!.Length; i++)
@@ -55,7 +54,7 @@ ArrayList Tokenize()
             b.Enque(Char.ToString(s));
         
         }
-        else if (IsOperator(s))
+        else if (IsOperator(s) || (s is ')' or '('))
         {
             if (b.GetLength() > 0)
             {
@@ -81,45 +80,58 @@ ArrayList Postfix(ArrayList tokens)
 {
     var operators = new Stack();
     var output = new ArrayList();
-    for (int i = 0; i <= tokens.GetLenght(); i++)
+    for (int i = 0; i < tokens.GetLenght(); i++)
     {
-        if (int.TryParse(tokens.GetElement(i), out int n))
+        string currentElement = tokens.GetElement(i);
+        // if number
+        if (int.TryParse(currentElement, out int n))
         {
-            output.Add(tokens.GetElement(i));
+            output.Add(currentElement);
         }
-        else if (IsOperator(char.Parse(tokens.GetElement(i))))
+        // if operator
+        else if (IsOperator(char.Parse(currentElement)))
         {
-            if (char.Parse(operators.Pull()) is '(')
-            {
-                operators.Push(tokens.GetElement(i));
-            }
-            else if (char.Parse(operators.Pull()) is ')')
-            {
-                while (true)
-                {
-                    if (char.Parse(operators.Pull()) is '(')
-                    {
-                        break;
-                    }
-
-                    output.Add(operators.Pull());
-                }
-            }
-            else if (OperatorConvert(char.Parse(operators.Pull())) >= OperatorConvert(char.Parse(tokens.GetElement(i))))
+            while (operators.GetLength() > 0 && operators.PullCopy() != "(" && OperatorConvert(currentElement) <= OperatorConvert(operators.PullCopy()) && currentElement != "^")
             {
                 output.Add(operators.Pull());
-                operators.Push(tokens.GetElement(i));
             }
-            else if(true)
+            operators.Push(currentElement);
+        }
+
+        else if (currentElement == "(")
+        {
+            operators.Push(currentElement);
+        }
+        else if (currentElement == ")")
+        {
+            while (operators.GetLength() > 0 && operators.PullCopy() != "(")
             {
-                operators.Push(tokens.GetElement(i));
+                output.Add(operators.Pull());
+            }
+
+            if (operators.PullCopy() == "(")
+            {
+                operators.Pull();
             }
         }
+        
     }
 
+    while (operators.GetLength() > 0)
+    {
+        var operatorToAdd = operators.Pull();
+        output.Add(operatorToAdd);
+    }
     return output;
 }
 
 ArrayList myTokens = Tokenize();
-ArrayList output = Postfix(myTokens);
-output.Print();
+ArrayList postfix = Postfix(myTokens);
+postfix.Print();
+
+
+
+
+          
+
+

@@ -54,9 +54,9 @@ public class ArrayList
     
     public void Print()
     {
-        foreach (var number in _array)
+        foreach (var value in _array)
         {
-            Console.WriteLine(number);
+            Console.WriteLine(value);
         }
     }
 
