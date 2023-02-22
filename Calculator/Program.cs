@@ -80,41 +80,52 @@ ArrayList Postfix(ArrayList tokens)
 {
     var operators = new Stack();
     var output = new ArrayList();
-    for (int i = 0; i < tokens.GetLenght(); i++)
+    try
     {
-        string currentElement = tokens.GetElement(i);
-        // if number
-        if (int.TryParse(currentElement, out int n))
+        for (int i = 0; i < tokens.GetLenght(); i++)
         {
-            output.Add(currentElement);
-        }
-        // if operator
-        else if (IsOperator(char.Parse(currentElement)))
-        {
-            while (operators.GetLength() > 0 && operators.PullCopy() != "(" && OperatorConvert(currentElement) <= OperatorConvert(operators.PullCopy()) && currentElement != "^")
+            string currentElement = tokens.GetElement(i);
+            // if number
+            if (int.TryParse(currentElement, out int n))
             {
-                output.Add(operators.Pull());
+                output.Add(currentElement);
             }
-            operators.Push(currentElement);
-        }
-
-        else if (currentElement == "(")
-        {
-            operators.Push(currentElement);
-        }
-        else if (currentElement == ")")
-        {
-            while (operators.GetLength() > 0 && operators.PullCopy() != "(")
+            // if operator
+            else if (IsOperator(char.Parse(currentElement)))
             {
-                output.Add(operators.Pull());
+                while (operators.GetLength() > 0 && operators.PullCopy() != "(" &&
+                       OperatorConvert(currentElement) <= OperatorConvert(operators.PullCopy()) &&
+                       currentElement != "^")
+                {
+                    output.Add(operators.Pull());
+                }
+
+                operators.Push(currentElement);
             }
 
-            if (operators.PullCopy() == "(")
+            else if (currentElement == "(")
             {
-                operators.Pull();
+                operators.Push(currentElement);
             }
+            else if (currentElement == ")")
+            {
+                while (operators.GetLength() > 0 && operators.PullCopy() != "(")
+                {
+                    output.Add(operators.Pull());
+                }
+
+                if (operators.PullCopy() == "(")
+                {
+                    operators.Pull();
+                }
+            }
+
         }
-        
+    }
+    catch
+    {
+        throw new Exception(
+            "It looks like you gave us too large numbers, make sure they are in range -2,147,483,648 to 2,147,483,647");
     }
 
     while (operators.GetLength() > 0)
