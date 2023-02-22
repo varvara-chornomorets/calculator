@@ -80,58 +80,72 @@ ArrayList Postfix(ArrayList tokens)
 {
     var operators = new Stack();
     var output = new ArrayList();
-    try
+    for (int i = 0; i < tokens.GetLenght(); i++)
     {
-        for (int i = 0; i < tokens.GetLenght(); i++)
+        string currentElement = tokens.GetElement(i);
+        // check for large numbers
+        try
         {
-            string currentElement = tokens.GetElement(i);
-            // if number
-            if (int.TryParse(currentElement, out int n))
-            {
-                output.Add(currentElement);
-            }
-            // if operator
-            else if (IsOperator(char.Parse(currentElement)))
-            {
-                while (operators.GetLength() > 0 && operators.PullCopy() != "(" &&
-                       OperatorConvert(currentElement) <= OperatorConvert(operators.PullCopy()) &&
-                       currentElement != "^")
-                {
-                    output.Add(operators.Pull());
-                }
-
-                operators.Push(currentElement);
-            }
-
-            else if (currentElement == "(")
-            {
-                operators.Push(currentElement);
-            }
-            else if (currentElement == ")")
-            {
-                while (operators.GetLength() > 0 && operators.PullCopy() != "(")
-                {
-                    output.Add(operators.Pull());
-                }
-
-                if (operators.PullCopy() == "(")
-                {
-                    operators.Pull();
-                }
-            }
-
+            IsOperator(Char.Parse(currentElement));
         }
+        catch
+        {
+            throw new Exception("too large numbers, make sure they are in the range -2,147,483,648 to 2,147,483,647");
+        }
+        // if number
+        if (int.TryParse(currentElement, out int n))
+        {
+            output.Add(currentElement);
+        }
+        // if operator
+        else if (IsOperator(char.Parse(currentElement)))
+        {
+            while (operators.GetLength() > 0 && operators.PullCopy() != "(" &&
+                   OperatorConvert(currentElement) <= OperatorConvert(operators.PullCopy()) &&
+                   currentElement != "^")
+            {
+                output.Add(operators.Pull());
+            }
+
+            operators.Push(currentElement);
+        }
+
+        else if (currentElement == "(")
+        {
+            operators.Push(currentElement);
+        }
+        else if (currentElement == ")")
+        {
+            while (operators.GetLength() > 0 && operators.PullCopy() != "(")
+            {
+                output.Add(operators.Pull());
+            }
+
+            if (operators.PullCopy() == "(")
+            {
+                operators.Pull();
+            }
+            else
+            {
+                throw new Exception("there are mismatched parenthesis");
+            }
+        }
+
     }
-    catch
-    {
-        throw new Exception(
-            "It looks like you gave us too large numbers, make sure they are in range -2,147,483,648 to 2,147,483,647");
-    }
+    
+
 
     while (operators.GetLength() > 0)
     {
         var operatorToAdd = operators.Pull();
-        output.Add(operatorToAdd);
+        if (operatorToAdd != "(")
+        {
+            output.Add(operatorToAdd);
+        }
+        else
+        {
+            throw new Exception("mismatched parethesis");
+        }
     }
     return output;
 }
