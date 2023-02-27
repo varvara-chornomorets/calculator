@@ -40,7 +40,6 @@ int OperatorConvert(string s)
     return 0;
 }
 
-
 ArrayList Tokenize()
 {
     string? newInput = Console.ReadLine();
@@ -83,15 +82,6 @@ ArrayList Postfix(ArrayList tokens)
     for (int i = 0; i < tokens.GetLenght(); i++)
     {
         string currentElement = tokens.GetElement(i);
-        // check for large numbers
-        try
-        {
-            IsOperator(Char.Parse(currentElement));
-        }
-        catch
-        {
-            throw new Exception("too large numbers, make sure they are in the range -2,147,483,648 to 2,147,483,647");
-        }
         // if number
         if (int.TryParse(currentElement, out int n))
         {
@@ -150,10 +140,68 @@ ArrayList Postfix(ArrayList tokens)
     return output;
 }
 
+string MakeOperation(string firstNumber, string secondNumber, string currentOperator)
+{
+    double numberOne = double.Parse(firstNumber);
+    double numberTwo = double.Parse(secondNumber);
+    string result = "";
+    double intResult = 0;
+    switch (currentOperator)
+    {
+        case "+":
+            intResult = numberOne + numberTwo;
+            break;
+        case "-":
+            intResult = numberOne - numberTwo;
+            break;
+        case "*":
+            intResult = numberOne * numberTwo;
+            break;
+        case "/":
+            if (numberTwo == 0)
+            {
+                throw new Exception("you cannot divide by 0");
+            }
+            intResult = numberOne / numberTwo;
+            break;
+        case "^":
+            intResult = Convert.ToDouble(Math.Pow(numberOne, numberTwo));
+            break;
+        default:
+            throw new Exception("the operator is invalid");
+    }
+
+    result = intResult.ToString();
+    return result;
+}
+
+
+string Count(ArrayList tokens)
+{
+    Stack s = new Stack();
+    for (int i = 0; i < tokens.GetLenght(); i++)
+    {
+        string currentElement = tokens.GetElement(i);
+        if (int.TryParse(currentElement, out _))
+        {
+            s.Push(currentElement);
+        }
+        else
+        {
+            string secondNumber = s.Pull();
+            string firstNumber = s.Pull();
+            string result = MakeOperation(firstNumber, secondNumber, currentElement);
+            s.Push(result);
+        }
+    }
+
+    return s.Pull();
+}
+
 ArrayList myTokens = Tokenize();
 ArrayList postfix = Postfix(myTokens);
-postfix.Print();
-
+string result = Count(postfix);
+Console.WriteLine(result);
 
 
 
